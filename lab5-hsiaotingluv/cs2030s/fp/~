@@ -1,0 +1,93 @@
+import java.util.NoSuchElementException;
+
+public abstract class Maybe<T> {
+  private final static None NONE = new None();
+
+  private static class None extends Maybe<?> {
+
+    @Override
+    public String toString() {
+      return "[]";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      return obj instanceof None;
+    }
+
+    @Override
+    protected ? get() throws NoSuchElementException {
+      throw new NoSuchElementException("No such element exception!");
+    }
+  }
+
+  private final static class Some<T> extends Maybe<T> {
+    private T content;
+
+    private Some(T t) {
+      this.content = t;
+    }
+
+    @Override
+    public String toString() {
+      return "[" + this.content + "]";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (obj instanceof Some) {
+        // since object is an instance of Some,
+        // it is safe to cast it as a Some object
+        @SuppressWarnings("unchecked")
+        Some<T> some = (Some<T>) obj;
+
+        return this.content.equals(some.content); 
+      } else {
+        return false;
+      }
+    }
+
+    @Override
+    protected T get() {
+      return this.content;
+    }
+  }
+
+  public static None none() {
+    return NONE;
+  }
+
+  public static <T> Some<T> some(T t) {
+    return new Some<T>(t);
+  }
+
+  public static <T> Maybe<T> of(T content) {
+    if (content == null) {
+      return (Maybe<T>) NONE;
+    } else {
+      return new Some<T>(content);
+    }
+  }
+  
+  protected abstract T get();
+
+  /*
+  public Maybe<T> filter(BooleanCondition c) {
+
+  }
+  */
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
